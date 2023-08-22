@@ -1,20 +1,36 @@
-import React, {FormEvent} from 'react';
+import React, {FormEvent, useEffect, useRef, useState} from 'react';
+import { useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 
 const FirstPage = () => {
-    const handleSubmit = (event: FormEvent) => {
+    const [disable, setdisable] = useState(false);
+    const formRef = useRef<HTMLFormElement | null>(null);
+    const storedData = localStorage.getItem('user-auth-info');
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        if(storedData){
+            setdisable(!disable);
+        }
+    },[]);
+
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const form = event.target;
-        const name = form.name.value;
-        const email = form.email.value;
-        const phone = form.phone.value;
+        const formData = formRef.current;
+        if (!formData) return;
+        const form = new FormData(event.currentTarget);
+        const name = form.get('name');
+        const email = form.get('email');
+        const phone = form.get('phone');
         const userAuth = {
             name, email, phone
         };
         localStorage.setItem('user-auth-info', JSON.stringify(userAuth));
-        form.reset();
+        formData.reset();
+        setdisable(!disable);
+        navigate('/second+page');
     }
 
     return (
@@ -23,7 +39,7 @@ const FirstPage = () => {
             <nav style={{ marginBottom: '2rem', textAlign:'center' }}>
                 <Button href='/second+page' variant="contained">Move to the Second Page</Button>
             </nav>
-            <form onSubmit={handleSubmit} style={{maxWidth:'600px', margin:'0 auto'}}>
+            <form ref={formRef} onSubmit={handleSubmit} style={{maxWidth:'600px', margin:'0 auto'}}>
                 <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <TextField
@@ -55,6 +71,7 @@ const FirstPage = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <Button
+                            disabled={disable}
                             type="submit"
                             variant="contained"
                             color="primary"

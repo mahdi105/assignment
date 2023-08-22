@@ -1,10 +1,16 @@
-import React, {ReactNode} from 'react';
+import React, { ReactNode } from 'react';
+import { Navigate } from "react-router-dom";
 
-interface PrivateRouteProp{
+interface PrivateRouteProp {
     children: ReactNode;
 }
 
-const PrivateRoute: React.FC<PrivateRouteProp> = ({children}) => {
+const PrivateRoute: React.FC<PrivateRouteProp> = ({ children }) => {
+    const storedUserData = localStorage.getItem('user-auth-info');
+    if (!storedUserData) {
+        alert('Please provide your information');
+        return <Navigate to='/' replace={true}></Navigate> ;
+    }
     return (
         <div>
             {
