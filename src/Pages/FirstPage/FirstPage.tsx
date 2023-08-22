@@ -1,19 +1,33 @@
-import React from 'react';
+import React, {FormEvent} from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 
 const FirstPage = () => {
+    const handleSubmit = (event: FormEvent) => {
+        event.preventDefault();
+        const form = event.target;
+        const name = form.name.value;
+        const email = form.email.value;
+        const phone = form.phone.value;
+        const userAuth = {
+            name, email, phone
+        };
+        localStorage.setItem('user-auth-info', JSON.stringify(userAuth));
+        form.reset();
+    }
+
     return (
         <div>
-            <h1 style={{ fontSize: '3rem', marginBottom: '.8rem' }}>This is first page</h1>
-            <nav style={{ marginBottom: '.8rem' }}>
-                <Button href='/second+page' variant="contained">Second Page</Button>
+            <h1 style={{ fontSize: '3rem', textAlign:'center',marginBottom:'.8rem' }}>This is the first page</h1>
+            <nav style={{ marginBottom: '2rem', textAlign:'center' }}>
+                <Button href='/second+page' variant="contained">Move to the Second Page</Button>
             </nav>
-            <form>
-                <Grid container style={{maxWidth:'600px'}} spacing={2}>
+            <form onSubmit={handleSubmit} style={{maxWidth:'600px', margin:'0 auto'}}>
+                <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <TextField
+                            name='name'
                             label="Name"
                             variant="outlined"
                             fullWidth
@@ -22,6 +36,7 @@ const FirstPage = () => {
                     </Grid>
                     <Grid item xs={6}>
                         <TextField
+                            name='phone'
                             label="Phone Number"
                             variant="outlined"
                             fullWidth
@@ -30,6 +45,7 @@ const FirstPage = () => {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
+                            name='email'
                             label="Email"
                             variant="outlined"
                             fullWidth
@@ -44,7 +60,7 @@ const FirstPage = () => {
                             color="primary"
                             fullWidth
                         >
-                            Submit
+                            Submit & Move to the Second page
                         </Button>
                     </Grid>
                 </Grid>
